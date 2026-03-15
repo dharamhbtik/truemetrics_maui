@@ -12,6 +12,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Required to cross-compile Windows target on macOS/Linux -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Suppress MA002: we intentionally don't pull in MAUI Controls for the library -->
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 
     <!-- NuGet packaging -->
     <IsPackable>true</IsPackable>

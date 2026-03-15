@@ -1,4 +1,4 @@
-using Android.App;
+using Microsoft.Extensions.Logging;
 using TrueMetrics.Sdk.Android;
 using TrueMetrics.Sdk.Android.Config;
 
@@ -8,7 +8,7 @@ internal sealed partial class TrueMetricsService
 {
     private Task InitializePlatformAsync(string apiKey)
     {
-        var context = Application.Context
+        var context = global::Android.App.Application.Context
             ?? throw new InvalidOperationException("Android Application.Context is null.");
 
         var config = new SdkConfiguration.Builder(apiKey)
