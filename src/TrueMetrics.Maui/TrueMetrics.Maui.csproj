@@ -24,10 +24,10 @@
     <Description>.NET MAUI wrapper for the TRUE Metrics Android SDK. Provides cross-platform API with full Android implementation.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dharamhbtik/truemetrics_maui/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>maui analytics telemetry truemetrics android</PackageTags>
-    <PackageProjectUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/dharamhbtik/truemetrics_maui/</PackageProjectUrl>
     <Copyright>Copyright © TRUE Metrics Community</Copyright>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
