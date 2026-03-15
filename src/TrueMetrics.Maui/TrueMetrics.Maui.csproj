@@ -10,6 +10,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Required to cross-compile Windows target on macOS/Linux -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
     <!-- NuGet packaging -->
     <IsPackable>true</IsPackable>
