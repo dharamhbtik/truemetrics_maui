@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrueMetrics.Maui.Sample.MainPage"
+             Title="TrueMetrics Demo">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <Label Text="TRUE Metrics SDK"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,0" />
+
+            <Label Text="Android SDK Demo"
+                   FontSize="14"
+                   TextColor="{StaticResource Gray200}"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,20" />
+
+            <!-- Status -->
+            <Frame BackgroundColor="{StaticResource Gray950}"
+                   CornerRadius="8"
+                   Padding="16">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Status" FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray200}" />
+                    <Label x:Name="StatusLabel"
+                           Text="Not initialized"
+                           FontSize="15"
+                           TextColor="{StaticResource White}" />
+                    <Label x:Name="DeviceIdLabel"
+                           Text="Device ID: —"
+                           FontSize="12"
+                           TextColor="{StaticResource Gray200}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- SDK Controls -->
+            <Label Text="SDK Controls"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   Margin="0,8,0,0" />
+
+            <Button x:Name="InitButton"
+                    Text="Initialize SDK"
+                    Clicked="OnInitializeClicked" />
+
+            <Button x:Name="StartButton"
+                    Text="Start Session"
+                    Clicked="OnStartSessionClicked"
+                    IsEnabled="False" />
+
+            <Button x:Name="StopButton"
+                    Text="Stop Session"
+                    Clicked="OnStopSessionClicked"
+                    IsEnabled="False"
+                    BackgroundColor="{StaticResource PrimaryDark}" />
+
+            <!-- Event Tracking -->
+            <Label Text="Event Tracking"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   Margin="0,8,0,0" />
+
+            <Button x:Name="TrackSimpleButton"
+                    Text="Track Event (simple)"
+                    Clicked="OnTrackSimpleEventClicked"
+                    IsEnabled="False" />
+
+            <Button x:Name="TrackPropsButton"
+                    Text="Track Event (with properties)"
+                    Clicked="OnTrackEventWithPropertiesClicked"
+                    IsEnabled="False" />
+
+            <!-- User Identity -->
+            <Label Text="User Identity"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   Margin="0,8,0,0" />
+
+            <Entry x:Name="UserIdEntry"
+                   Placeholder="Enter user ID"
+                   ReturnType="Done"
+                   Margin="0,0,0,4" />
+
+            <Button Text="Set User ID"
+                    Clicked="OnSetUserIdClicked" />
+
+            <!-- Log output -->
+            <Label Text="Log"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   Margin="0,8,0,0" />
+
+            <Frame BackgroundColor="{StaticResource Gray950}"
+                   CornerRadius="8"
+                   Padding="12"
+                   MinimumHeightRequest="120">
+                <ScrollView>
+                    <Label x:Name="LogLabel"
+                           Text="(log output will appear here)"
+                           FontSize="12"
+                           TextColor="{StaticResource Gray200}"
+                           LineBreakMode="WordWrap" />
+                </ScrollView>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

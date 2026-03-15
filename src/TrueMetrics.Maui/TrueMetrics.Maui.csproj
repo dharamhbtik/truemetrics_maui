@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <AssemblyName>TrueMetrics.Maui</AssemblyName>
+    <RootNamespace>TrueMetrics.Maui</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- NuGet packaging -->
+    <IsPackable>true</IsPackable>
+    <PackageId>TrueMetrics.Maui</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>TRUE Metrics Community</Authors>
+    <Company>TRUE Metrics</Company>
+    <Description>.NET MAUI wrapper for the TRUE Metrics Android SDK. Provides cross-platform API with full Android implementation.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>maui analytics telemetry truemetrics android</PackageTags>
+    <PackageProjectUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</PackageProjectUrl>
+    <Copyright>Copyright © TRUE Metrics Community</Copyright>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android'))">
+    <ProjectReference Include="..\TrueMetrics.Maui.Android.Binding\TrueMetrics.Maui.Android.Binding.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

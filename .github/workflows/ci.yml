@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  NUGET_OUTPUT: ./artifacts
+
+jobs:
+  build:
+    name: Build & Pack
+    runs-on: windows-latest   # MAUI Android builds require Windows or macOS
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for source link
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install MAUI workloads
+        run: dotnet workload install maui android
+
+      - name: Restore
+        run: dotnet restore TrueMetrics.Maui.sln
+
+      - name: Build (Release)
+        run: dotnet build TrueMetrics.Maui.sln --configuration Release --no-restore
+
+      - name: Pack NuGet
+        run: >
+          dotnet pack src/TrueMetrics.Maui/TrueMetrics.Maui.csproj
+          --configuration Release
+          --no-build
+          --output ${{ env.NUGET_OUTPUT }}
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ${{ env.NUGET_OUTPUT }}/*.nupkg
+
+      - name: Upload symbol packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-symbols
+          path: ${{ env.NUGET_OUTPUT }}/*.snupkg
+
+  publish:
+    name: Publish to NuGet
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download NuGet artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+
+      - name: Download symbol packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-symbols
+          path: ./artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push ./artifacts/*.nupkg
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      - name: Push symbols to NuGet.org
+        run: >
+          dotnet nuget push ./artifacts/*.snupkg
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

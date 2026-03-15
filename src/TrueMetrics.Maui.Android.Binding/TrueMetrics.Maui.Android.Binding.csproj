@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <AssemblyName>TrueMetrics.Maui.Android.Binding</AssemblyName>
+    <RootNamespace>TrueMetrics.Maui.Android.Binding</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The AAR is embedded and bound as a native Android library -->
+    <AndroidLibrary Include="Jars\truemetricssdk-1.4.6.aar">
+      <Bind>true</Bind>
+    </AndroidLibrary>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Metadata transforms to fix binding issues -->
+    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\EnumFields.xml" />
+    <TransformFile Include="Transforms\EnumMethods.xml" />
+  </ItemGroup>
+
+</Project>
