@@ -18,17 +18,17 @@
     <!-- NuGet packaging -->
     <IsPackable>true</IsPackable>
     <PackageId>TrueMetrics.Maui</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>TRUE Metrics Community</Authors>
-    <Company>TRUE Metrics</Company>
+    <Version>1.0.1</Version>
+    <Authors>Dharmendra Kumar</Authors>
+    <Company>ZenithCodeStudio</Company>
     <Description>.NET MAUI wrapper for the TRUE Metrics Android SDK. Provides cross-platform API with full Android implementation.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dharamhbtik/truemetrics_maui/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>maui analytics telemetry truemetrics android</PackageTags>
-    <PackageProjectUrl>https://github.com/YOUR_ORG/TrueMetrics.Maui</PackageProjectUrl>
-    <Copyright>Copyright © TRUE Metrics Community</Copyright>
+    <PackageProjectUrl>https://github.com/dharamhbtik/truemetrics_maui/</PackageProjectUrl>
+    <Copyright>Copyright © ZenithCodeStudio</Copyright>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

@@ -35,7 +35,7 @@ jobs:
         run: dotnet restore TrueMetrics.Maui.sln
 
       - name: Build (Release)
-        run: dotnet build TrueMetrics.Maui.sln --configuration Release --no-restore
+        run: dotnet build src/TrueMetrics.Maui/TrueMetrics.Maui.csproj --configuration Release --no-restore
 
       - name: Pack NuGet
         run: >
