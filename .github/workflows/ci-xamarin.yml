@@ -13,7 +13,7 @@ jobs:
   build-and-publish:
     name: Build, Pack & Publish
     # macos-13 ships with Mono, Xamarin.Android, Xamarin.iOS and msbuild
-    runs-on: macos-13
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
