@@ -1,4 +1,4 @@
-name: CI-Xamain
+name: CI-Xamarin
 
 on:
   push:
@@ -12,7 +12,6 @@ env:
 jobs:
   build-and-publish:
     name: Build, Pack & Publish
-    # macos-13 ships with Mono, Xamarin.Android, Xamarin.iOS and msbuild
     runs-on: windows-latest
 
     steps:
@@ -28,35 +27,35 @@ jobs:
 
       - name: Install NuGet CLI
         run: |
-          curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-          echo '#!/bin/bash' > /usr/local/bin/nuget
-          echo 'mono /usr/local/bin/nuget.exe "$@"' >> /usr/local/bin/nuget
-          chmod +x /usr/local/bin/nuget
+          New-Item -ItemType Directory -Path "$env:TEMP\nuget" -Force | Out-Null
+          $nugetPath = "$env:TEMP\nuget\nuget.exe"
+          Invoke-WebRequest -Uri "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile $nugetPath
+          Add-Content -Path $env:GITHUB_ENV -Value "NUGET_EXE=$nugetPath"
 
-      # Compute next version: fetch latest from NuGet, bump patch
       - name: Compute next version
         id: version
+        shell: pwsh
         run: |
-          PKG="truemetrics.xamarin"
-          LATEST=$(curl -s "https://api.nuget.org/v3-flatcontainer/${PKG}/index.json" \
-            | python3 -c "import sys,json; v=[x for x in json.load(sys.stdin).get('versions',[]) if '-' not in x]; print(v[-1] if v else '0.9.9')" 2>/dev/null || echo "0.9.9")
-          MAJOR=$(echo $LATEST | cut -d. -f1)
-          MINOR=$(echo $LATEST | cut -d. -f2)
-          PATCH=$(echo $LATEST | cut -d. -f3)
-          NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))"
-          echo "VERSION=$NEXT" >> $GITHUB_OUTPUT
-          echo "Latest: $LATEST  →  Next: $NEXT"
+          $PKG = "truemetrics.xamarin"
+          $response = Invoke-WebRequest -Uri "https://api.nuget.org/v3-flatcontainer/$PKG/index.json" -UseBasicParsing
+          $versions = ($response.Content | ConvertFrom-Json).versions | Where-Object { $_ -notmatch '-' }
+          $LATEST = if ($versions.Count -gt 0) { $versions[-1] } else { "0.9.9" }
+          $parts = $LATEST -split '\.'
+          $NEXT = "$($parts[0]).$($parts[1]).$([int]$parts[2] + 1)"
+          "VERSION=$NEXT" >> $env:GITHUB_OUTPUT
+          "Latest: $LATEST  →  Next: $NEXT"
 
       # ── 1. Build the Android Binding (msbuild / Xamarin toolchain) ──────────
       - name: Restore binding NuGet packages
-        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj
+        run: |
+          & "$env:NUGET_EXE" restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj
         working-directory: TrueMetrics.Xamarin
 
       - name: Build Android Binding (msbuild Release)
         run: |
-          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj \
-            /p:Configuration=Release \
-            /p:ResolveNuGetPackages=false \
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj `
+            /p:Configuration=Release `
+            /p:ResolveNuGetPackages=false `
             /t:Build
         working-directory: TrueMetrics.Xamarin
 
@@ -67,49 +66,55 @@ jobs:
 
       # ── 3. Build Android platform project (msbuild) ─────────────────────────
       - name: Restore Android platform packages
-        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj
+        run: |
+          & "$env:NUGET_EXE" restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj
         working-directory: TrueMetrics.Xamarin
 
       - name: Build Android platform project (msbuild Release)
         run: |
-          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj \
-            /p:Configuration=Release \
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj `
+            /p:Configuration=Release `
             /t:Build
         working-directory: TrueMetrics.Xamarin
 
       # ── 4. Build iOS stub (msbuild) ─────────────────────────────────────────
       - name: Restore iOS packages
-        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj -PackagesDirectory packages
+        run: |
+          & "$env:NUGET_EXE" restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj -PackagesDirectory packages
         working-directory: TrueMetrics.Xamarin
 
       - name: Build iOS stub (msbuild Release)
         run: |
-          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj \
-            /p:Configuration=Release \
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj `
+            /p:Configuration=Release `
             /t:Build
         working-directory: TrueMetrics.Xamarin
 
       # ── 5. Build sample app (msbuild) ────────────────────────────────────────
       - name: Restore sample packages
-        run: nuget restore TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj
+        run: |
+          & "$env:NUGET_EXE" restore TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj
         working-directory: TrueMetrics.Xamarin
 
       - name: Build sample app (msbuild Release)
         run: |
-          msbuild TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj \
-            /p:Configuration=Release \
+          msbuild TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj `
+            /p:Configuration=Release `
             /t:Build
         working-directory: TrueMetrics.Xamarin
 
       # ── 6. Pack NuGet ────────────────────────────────────────────────────────
       - name: Create artifacts directory
-        run: mkdir -p ${{ env.NUGET_OUTPUT }}
+        run: |
+          if (-not (Test-Path "${{ env.NUGET_OUTPUT }}")) {
+            New-Item -ItemType Directory -Path "${{ env.NUGET_OUTPUT }}" -Force | Out-Null
+          }
 
       - name: Pack NuGet package
         run: |
-          nuget pack TrueMetrics.Xamarin.nuspec \
-            -Version ${{ steps.version.outputs.VERSION }} \
-            -OutputDirectory ${{ env.NUGET_OUTPUT }} \
+          & "$env:NUGET_EXE" pack TrueMetrics.Xamarin.nuspec `
+            -Version ${{ steps.version.outputs.VERSION }} `
+            -OutputDirectory ${{ env.NUGET_OUTPUT }} `
             -NonInteractive
         working-directory: TrueMetrics.Xamarin
 
@@ -123,9 +128,9 @@ jobs:
       - name: Push to NuGet.org
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          dotnet nuget push ${{ env.NUGET_OUTPUT }}/*.nupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source https://api.nuget.org/v3/index.json \
+          dotnet nuget push "${{ env.NUGET_OUTPUT }}\*.nupkg" `
+            --api-key ${{ secrets.NUGET_API_KEY }} `
+            --source https://api.nuget.org/v3/index.json `
             --skip-duplicate
 
       - name: Create GitHub Release
