@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NUGET_OUTPUT: ./artifacts
+
+jobs:
+  build-and-publish:
+    name: Build, Pack & Publish
+    # macos-13 ships with Mono, Xamarin.Android, Xamarin.iOS and msbuild
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8 (for netstandard2.1 build + nuget CLI)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install NuGet CLI
+        run: |
+          curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+          echo '#!/bin/bash' > /usr/local/bin/nuget
+          echo 'mono /usr/local/bin/nuget.exe "$@"' >> /usr/local/bin/nuget
+          chmod +x /usr/local/bin/nuget
+
+      # Compute next version: fetch latest from NuGet, bump patch
+      - name: Compute next version
+        id: version
+        run: |
+          PKG="truemetrics.xamarin"
+          LATEST=$(curl -s "https://api.nuget.org/v3-flatcontainer/${PKG}/index.json" \
+            | python3 -c "import sys,json; v=[x for x in json.load(sys.stdin).get('versions',[]) if '-' not in x]; print(v[-1] if v else '0.9.9')" 2>/dev/null || echo "0.9.9")
+          MAJOR=$(echo $LATEST | cut -d. -f1)
+          MINOR=$(echo $LATEST | cut -d. -f2)
+          PATCH=$(echo $LATEST | cut -d. -f3)
+          NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "VERSION=$NEXT" >> $GITHUB_OUTPUT
+          echo "Latest: $LATEST  →  Next: $NEXT"
+
+      # ── 1. Build the Android Binding (msbuild / Xamarin toolchain) ──────────
+      - name: Restore binding NuGet packages
+        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj
+        working-directory: TrueMetrics.Xamarin
+
+      - name: Build Android Binding (msbuild Release)
+        run: |
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android.Binding/TrueMetrics.Xamarin.Android.Binding.csproj \
+            /p:Configuration=Release \
+            /p:ResolveNuGetPackages=false \
+            /t:Build
+        working-directory: TrueMetrics.Xamarin
+
+      # ── 2. Build netstandard2.1 wrapper (dotnet build) ──────────────────────
+      - name: Build netstandard2.1 wrapper
+        run: dotnet build TrueMetrics.Xamarin/src/TrueMetrics.Xamarin/TrueMetrics.Xamarin.csproj --configuration Release
+        working-directory: TrueMetrics.Xamarin
+
+      # ── 3. Build Android platform project (msbuild) ─────────────────────────
+      - name: Restore Android platform packages
+        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj
+        working-directory: TrueMetrics.Xamarin
+
+      - name: Build Android platform project (msbuild Release)
+        run: |
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.Android/TrueMetrics.Xamarin.Android.csproj \
+            /p:Configuration=Release \
+            /t:Build
+        working-directory: TrueMetrics.Xamarin
+
+      # ── 4. Build iOS stub (msbuild) ─────────────────────────────────────────
+      - name: Restore iOS packages
+        run: nuget restore TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj -PackagesDirectory packages
+        working-directory: TrueMetrics.Xamarin
+
+      - name: Build iOS stub (msbuild Release)
+        run: |
+          msbuild TrueMetrics.Xamarin/src/TrueMetrics.Xamarin.iOS/TrueMetrics.Xamarin.iOS.csproj \
+            /p:Configuration=Release \
+            /t:Build
+        working-directory: TrueMetrics.Xamarin
+
+      # ── 5. Build sample app (msbuild) ────────────────────────────────────────
+      - name: Restore sample packages
+        run: nuget restore TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj
+        working-directory: TrueMetrics.Xamarin
+
+      - name: Build sample app (msbuild Release)
+        run: |
+          msbuild TrueMetrics.Xamarin/sample/TrueMetrics.Xamarin.Sample/TrueMetrics.Xamarin.Sample.csproj \
+            /p:Configuration=Release \
+            /t:Build
+        working-directory: TrueMetrics.Xamarin
+
+      # ── 6. Pack NuGet ────────────────────────────────────────────────────────
+      - name: Create artifacts directory
+        run: mkdir -p ${{ env.NUGET_OUTPUT }}
+
+      - name: Pack NuGet package
+        run: |
+          nuget pack TrueMetrics.Xamarin.nuspec \
+            -Version ${{ steps.version.outputs.VERSION }} \
+            -OutputDirectory ${{ env.NUGET_OUTPUT }} \
+            -NonInteractive
+        working-directory: TrueMetrics.Xamarin
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ${{ env.NUGET_OUTPUT }}/*.nupkg
+
+      # ── 7. Publish ───────────────────────────────────────────────────────────
+      - name: Push to NuGet.org
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          dotnet nuget push ${{ env.NUGET_OUTPUT }}/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create GitHub Release
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: TrueMetrics.Xamarin v${{ steps.version.outputs.VERSION }}
+          body: |
+            Automated release of TrueMetrics.Xamarin v${{ steps.version.outputs.VERSION }}.
+
+            Install via NuGet:
+            ```
+            Install-Package TrueMetrics.Xamarin -Version ${{ steps.version.outputs.VERSION }}
+            ```
+          files: ${{ env.NUGET_OUTPUT }}/*.nupkg
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
