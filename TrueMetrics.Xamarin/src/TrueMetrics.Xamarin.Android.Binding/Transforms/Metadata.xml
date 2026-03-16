@@ -2,52 +2,37 @@
 
   <!--
     ═══════════════════════════════════════════════════════════════
-    REMOVE ALL INTERNAL / OBFUSCATED PACKAGES
-    These are either R8-obfuscated internals or bundled Sentry SDK
-    internals that produce broken C# bindings. None of them are
-    part of the public TRUE Metrics API surface.
+    REMOVE OBFUSCATED PACKAGES
     ═══════════════════════════════════════════════════════════════
   -->
-
-  <!-- R8-obfuscated single-letter packages -->
   <remove-node path="/api/package[@name='a']" />
   <remove-node path="/api/package[@name='b']" />
   <remove-node path="/api/package[@name='c']" />
   <remove-node path="/api/package[@name='d']" />
 
-  <!-- Bundled Sentry SDK internals — all sub-packages -->
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.backpressure']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.cache']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.cache.tape']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.clientreport']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.config']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.exception']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.hints']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.instrumentation.file']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.internal.debugmeta']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.internal.gestures']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.internal.modules']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.internal.viewhierarchy']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.metrics']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.profilemeasurements']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.protocol']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.rrweb']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.transport']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.util']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.util.thread']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.vendor']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.vendor.gson.internal.bind.util']" />
-  <remove-node path="/api/package[@name='io.truemetrics.internal.sentry.vendor.gson.stream']" />
-
-  <!-- Internal SDK engine packages not needed in public API -->
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    REMOVE ALL INTERNAL ENGINE PACKAGES
+    Keep only: io.truemetrics.truemetricssdk (main)
+               io.truemetrics.truemetricssdk.config (SdkConfiguration)
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.common']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.data.local']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.data.network']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.di']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.domain']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.domain.model']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.device']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.network']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.permissions']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.sensor']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.sensor.di']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.sensor.model']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.sensor.monitor']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.state']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.stats']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.storage']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.storage.db']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.storage.db.room']" />
@@ -57,17 +42,23 @@
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.upload.data.network.model']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.upload.di']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.upload.model']" />
-  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.device']" />
-  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.engine.common']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.metadata']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.metadata.di']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.notifications']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.service']" />
-  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.util']" />
   <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.tracking']" />
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.util']" />
+
+  <!--
+    Remove ForegroundNotificationFactory interface — the Xamarin 13.x generator
+    produces an invoker that references IJavaPeerable members not available in
+    the Mono runtime. Consumers can implement foreground notifications natively.
+  -->
+  <remove-node path="/api/package[@name='io.truemetrics.truemetricssdk.config']/interface[@name='ForegroundNotificationFactory']" />
 
   <!--
     ═══════════════════════════════════════════════════════════════
-    NAMESPACE MAPPING — public API packages only
+    NAMESPACE MAPPING
     ═══════════════════════════════════════════════════════════════
   -->
   <attr path="/api/package[@name='io.truemetrics.truemetricssdk']"
@@ -76,27 +67,11 @@
   <attr path="/api/package[@name='io.truemetrics.truemetricssdk.config']"
         name="managedName">TrueMetrics.Sdk.Android.Config</attr>
 
-  <attr path="/api/package[@name='io.truemetrics.truemetricssdk.engine.state']"
-        name="managedName">TrueMetrics.Sdk.Android.State</attr>
-
-  <attr path="/api/package[@name='io.truemetrics.truemetricssdk.engine.stats']"
-        name="managedName">TrueMetrics.Sdk.Android.Stats</attr>
-
-  <attr path="/api/package[@name='io.truemetrics.truemetricssdk.engine.sensor.model']"
-        name="managedName">TrueMetrics.Sdk.Android.Sensor</attr>
-
-  <attr path="/api/package[@name='io.truemetrics.truemetricssdk.engine.configuration.domain.model']"
-        name="managedName">TrueMetrics.Sdk.Android.Configuration</attr>
-
-  <attr path="/api/package[@name='io.truemetrics.truemetricssdk.metadata']"
-        name="managedName">TrueMetrics.Sdk.Android.Metadata</attr>
-
   <!--
     ═══════════════════════════════════════════════════════════════
-    CLASS RENAMES — idiomatic .NET naming
+    CLASS RENAMES
     ═══════════════════════════════════════════════════════════════
   -->
-  <!-- Main SDK class: TruemetricsSdk → TrueMetricsSdk -->
   <attr path="/api/package[@name='io.truemetrics.truemetricssdk']/class[@name='TruemetricsSdk']"
         name="managedName">TrueMetricsSdk</attr>
 

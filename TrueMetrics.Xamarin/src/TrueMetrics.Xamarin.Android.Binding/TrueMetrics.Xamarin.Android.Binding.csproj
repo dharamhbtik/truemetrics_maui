@@ -13,6 +13,11 @@
     <RootNamespace>TrueMetrics.Xamarin.Android.Binding</RootNamespace>
     <AssemblyName>TrueMetrics.Xamarin.Android.Binding</AssemblyName>
     <TargetFrameworkVersion>v13.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+    <!-- Skip NuGet asset resolution — binding has no package deps -->
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <!-- class-parse is required for Kotlin-compiled JARs; jar2xml cannot parse them -->
+    <AndroidClassParser>class-parse</AndroidClassParser>
     <Nullable>enable</Nullable>
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
@@ -37,8 +42,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
+  <!-- Mono.Android, Java.Interop, and System are required by class-parse generated code -->
   <ItemGroup>
-    <AndroidLibrary Include="Jars\truemetricssdk-1.4.6.aar" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="Java.Interop" />
+    <Reference Include="System" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      The AAR provides native resources, AndroidManifest, and the bundled
+      sentry-shaded.jar (libs/). Bind=false so the generator does NOT
+      try to bind the Sentry internals from the AAR's libs/ folder.
+    -->
+    <AndroidLibrary Include="Jars\truemetricssdk-1.4.6.aar">
+      <Bind>false</Bind>
+    </AndroidLibrary>
+
+    <!--
+      classes.jar (extracted from the AAR) contains the public TrueMetrics SDK API.
+      We bind only this jar so the generator produces clean C# bindings for
+      io.truemetrics.truemetricssdk.* only.
+    -->
+    <EmbeddedJar Include="Jars\truemetricssdk-classes.jar" />
   </ItemGroup>
 
   <ItemGroup>

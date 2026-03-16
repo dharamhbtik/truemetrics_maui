@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>TrueMetrics.Xamarin</id>
+    <version>1.0.0</version>
+    <authors>TRUE Metrics Community</authors>
+    <owners>TRUE Metrics Community</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/dharamhbtik/truemetrics_maui/</projectUrl>
+    <description>Xamarin.Forms wrapper for the TRUE Metrics Android SDK. Provides a clean async DI-friendly API. Full implementation on Android (MonoAndroid13.0). iOS and netstandard2.1 throw PlatformNotSupportedException.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright © TRUE Metrics Community</copyright>
+    <tags>xamarin xamarin.forms android truemetrics analytics telemetry netstandard</tags>
+    <repository type="git" url="https://github.com/dharamhbtik/truemetrics_maui/" />
+    <readme>README.md</readme>
+
+    <dependencies>
+      <group targetFramework="netstandard2.1">
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+      </group>
+      <group targetFramework="MonoAndroid13.0">
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+      </group>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="6.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <!-- netstandard2.1 — shared reference -->
+    <file src="src\TrueMetrics.Xamarin\bin\Release\netstandard2.1\TrueMetrics.Xamarin.dll"
+          target="lib\netstandard2.1\TrueMetrics.Xamarin.dll" />
+    <file src="src\TrueMetrics.Xamarin\bin\Release\netstandard2.1\TrueMetrics.Xamarin.xml"
+          target="lib\netstandard2.1\TrueMetrics.Xamarin.xml" />
+
+    <!-- MonoAndroid13.0 — Android implementation -->
+    <file src="src\TrueMetrics.Xamarin.Android\bin\Release\TrueMetrics.Xamarin.dll"
+          target="lib\MonoAndroid13.0\TrueMetrics.Xamarin.dll" />
+    <file src="src\TrueMetrics.Xamarin.Android\bin\Release\TrueMetrics.Xamarin.Android.Binding.dll"
+          target="lib\MonoAndroid13.0\TrueMetrics.Xamarin.Android.Binding.dll" />
+
+    <!-- Xamarin.iOS10 — iOS stub -->
+    <file src="src\TrueMetrics.Xamarin.iOS\bin\Release\TrueMetrics.Xamarin.dll"
+          target="lib\Xamarin.iOS10\TrueMetrics.Xamarin.dll" />
+
+    <!-- README -->
+    <file src="README.md" target="README.md" />
+  </files>
+</package>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Xamarin.iOS10 platform project — iOS stub -->
+<Project ToolsVersion="4.0" DefaultTargets="Build"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E5F6A7B8-C9D0-1234-EFAB-345678901235}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TrueMetrics.Xamarin</RootNamespace>
+    <AssemblyName>TrueMetrics.Xamarin</AssemblyName>
+    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>RELEASE;</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Shared source files (linked from the netstandard project) -->
+  <ItemGroup>
+    <Compile Include="..\TrueMetrics.Xamarin\ITrueMetricsService.cs">
+      <Link>ITrueMetricsService.cs</Link>
+    </Compile>
+    <Compile Include="..\TrueMetrics.Xamarin\TrueMetricsOptions.cs">
+      <Link>TrueMetricsOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\TrueMetrics.Xamarin\TrueMetricsService.cs">
+      <Link>TrueMetricsService.cs</Link>
+    </Compile>
+    <Compile Include="..\TrueMetrics.Xamarin\TrueMetricsServiceCollectionExtensions.cs">
+      <Link>TrueMetricsServiceCollectionExtensions.cs</Link>
+    </Compile>
+    <!-- iOS platform stub -->
+    <Compile Include="..\TrueMetrics.Xamarin\Platforms\iOS\TrueMetricsService.iOS.cs">
+      <Link>TrueMetricsService.iOS.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+
+  <!-- NuGet package references resolved via packages.config -->
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+
+</Project>

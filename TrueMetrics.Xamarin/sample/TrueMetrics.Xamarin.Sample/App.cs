@@ -7,11 +7,10 @@ namespace TrueMetrics.Xamarin.Sample
 {
     public class App : Application
     {
-        public static IServiceProvider Services { get; private set; } = null!;
+        public static ServiceProvider Services { get; private set; } = null!;
 
         public App()
         {
-            // Build DI container
             var services = new ServiceCollection();
 
             services.AddLogging(b => b.AddDebug().SetMinimumLevel(LogLevel.Debug));

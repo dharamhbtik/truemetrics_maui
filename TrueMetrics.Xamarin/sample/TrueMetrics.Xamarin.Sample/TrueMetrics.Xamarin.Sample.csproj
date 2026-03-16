@@ -44,17 +44,41 @@
     <Compile Include="App.cs" />
   </ItemGroup>
 
+  <!-- Reference the Android platform project (which includes the binding) -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TrueMetrics.Xamarin\TrueMetrics.Xamarin.csproj">
-      <Project>{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}</Project>
-      <Name>TrueMetrics.Xamarin</Name>
+    <ProjectReference Include="..\..\src\TrueMetrics.Xamarin.Android\TrueMetrics.Xamarin.Android.csproj">
+      <Project>{D4E5F6A7-B8C9-0123-DEFA-234567890124}</Project>
+      <Name>TrueMetrics.Xamarin.Android</Name>
     </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+    <None Include="packages.config" />
+  </ItemGroup>
+
+  <!-- NuGet package references resolved via packages.config -->
+  <ItemGroup>
+    <Reference Include="Xamarin.Forms.Core">
+      <HintPath>..\..\packages\Xamarin.Forms.5.0.0.2662\lib\MonoAndroid13.0\Xamarin.Forms.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Forms.Platform">
+      <HintPath>..\..\packages\Xamarin.Forms.5.0.0.2662\lib\MonoAndroid13.0\Xamarin.Forms.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Forms.Platform.Android">
+      <HintPath>..\..\packages\Xamarin.Forms.5.0.0.2662\lib\MonoAndroid13.0\Xamarin.Forms.Platform.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Debug">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Debug.6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Debug.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

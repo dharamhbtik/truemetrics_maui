@@ -25,6 +25,7 @@ public static class MauiProgram
 
         // Register pages
         builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<App>();
 
 #if DEBUG
         builder.Logging.AddDebug();

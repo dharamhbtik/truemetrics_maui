@@ -8,7 +8,7 @@ namespace TrueMetrics.Xamarin.Sample
 {
     [Activity(
         Label = "TrueMetrics Sample",
-        Icon = "@mipmap/icon",
+        Icon = "@android:drawable/sym_def_app_icon",
         Theme = "@style/MainTheme",
         MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode)]
